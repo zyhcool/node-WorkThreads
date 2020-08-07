@@ -44,10 +44,14 @@ class ThreadPool {
                 this.createThread();
             }
         })
+        worker.on('error', (err) => {
+            console.log(err)
+        })
 
         worker.on('message', (result) => {
             const { event, work } = result;
             const { workId, data, error } = work;
+            console.log('message', work)
             switch (event) {
                 case 'success':
                     const mywork = workPool[workId];

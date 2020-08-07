@@ -1,5 +1,4 @@
 const { parentPort } = require('worker_threads')
-
 const queue = [];
 
 parentPort.on('message', (work) => {
@@ -9,12 +8,12 @@ parentPort.on('message', (work) => {
 
 
 
-function poll() {
+async function poll() {
     if (queue.length > 0) {
         let work = queue.shift();
         const { workId, filename, args } = work;
         const func = require(filename);
-        let result = func.call(null, ...args);
+        let result = await func.call(null, ...args);
         parentPort.postMessage({ event: 'success', work: { workId, data: result } });
         poll();
     } else {
