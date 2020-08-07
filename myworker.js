@@ -5,12 +5,14 @@ const events = require('events');
 let MyWorker = {
 
 }
-MyWorker.taskqueue = [];
+// MyWorker.taskqueue = [];
+MyWorker.workerqueue = [];
 MyWorker.num = 0;
 
 
 MyWorker.submit = function (filepath, options) {
     this.taskqueue.push({ filepath, options });
+
     return this.poll();
 }
 
@@ -37,15 +39,22 @@ MyWorker.poll = function () {
     })
 }
 
-MyWorker.create = function (task) {
-    let worker = new Worker(path.resolve(__dirname, task.filepath), task.options);
-    this.num++;
-    return worker;
+// MyWorker.create = function (task) {
+//     let worker = new Worker(path.resolve(__dirname, task.filepath), task.options);
+//     this.num++;
+//     return worker;
+// }
+
+MyWorker.init = function () {
+    for (let i = 0; i < 5; i++) {
+        const worker = new Worker(path.resolve(__dirname, 'comsum.js'), 'hello');
+        this.workerqueue.push(worker);
+
+    }
 }
 
 
-
-
+MyWorker.init();
 module.exports = MyWorker;
 
 
