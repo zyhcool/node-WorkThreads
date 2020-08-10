@@ -24,6 +24,9 @@ class ThreadPool {
 
     init() {
         let max = MAX_THREADS_NUM;
+        if (this.workQueue.length > 0) {
+            return;
+        }
         while (max--) {
             this.createThread();
         }
