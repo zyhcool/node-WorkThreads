@@ -51,7 +51,6 @@ class ThreadPool {
         worker.on('message', (result) => {
             const { event, work } = result;
             const { workId, data, error } = work;
-            console.log('message', work)
             switch (event) {
                 case 'success':
                     const mywork = workPool[workId];
@@ -84,14 +83,22 @@ class ThreadPool {
         node.worker.postMessage({ filename, workId, args });
         node.queueLength++;
         this.totalwork++;
-        return new MyWork({ workId, threadId });
+        let mywork = new MyWork({ workId, threadId })
+        return new Promise((resolve, reject) => {
+            mywork.once('message', (value) => {
+                resolve(value);
+            });
+            mywork.once('error', (err) => {
+                reject(err);
+            })
+        })
     }
 }
 
 
 
 
-module.exports = ThreadPool;
+module.exports = new ThreadPool();
 
 
 

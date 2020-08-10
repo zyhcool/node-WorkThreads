@@ -1,9 +1,8 @@
-async function cal(num) {
+async function cal(...args) {
     const start = Date.now();
     for (let i = 0; i < 10 ** 8; i++) { }
     const time = Date.now() - start;
-    console.log(time, 's')
-    return `${time} ms,${num}`;
+    return `${time} ms, ${args[0]}`;
 }
 
 module.exports = cal;

@@ -2,7 +2,6 @@ const { parentPort } = require('worker_threads')
 const queue = [];
 
 parentPort.on('message', (work) => {
-    console.log(work)
     queue.push(work);
 })
 
