@@ -35,9 +35,10 @@ const path = require('path');
 // 多线程封装
 http.createServer(async (req, res) => {
     let data = await ThreadPool.submit(path.resolve(__dirname, 'cal.js'), 'hello')
+    console.log(`res ${data}`)
     res.statusCode = 200;
     res.end(`${data}`);
-}).listen(3000, () => {
-    console.log('listen at 3000')
+}).listen(3001, () => {
+    console.log('listen at 3001')
 })
 

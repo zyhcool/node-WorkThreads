@@ -1,6 +1,7 @@
 const { Worker } = require('worker_threads');
 const path = require('path');
 const { EventEmitter } = require('events');
+const log = console.log;
 
 const MAX_THREADS_NUM = 20;
 const workPool = {};
@@ -39,9 +40,11 @@ class ThreadPool {
             queueLength: 0,
         }
         this.workQueue.push(node);
+        log(`worker ${worker.threadId} is working`)
         worker.on('exit', (exitcode) => {
+            log(`worker ${worker.threadId} exits`)
             if (exitcode) {
-                this.workQueue.filter((node) => {
+                this.workQueue = this.workQueue.filter((node) => {
                     return node.worker.threadId !== worker.threadId;
                 })
                 this.createThread();
@@ -52,6 +55,7 @@ class ThreadPool {
         })
 
         worker.on('message', (result) => {
+            // log(`worker ${worker.threadId} receive data`)
             const { event, work } = result;
             const { workId, data, error } = work;
             switch (event) {
@@ -67,6 +71,8 @@ class ThreadPool {
                 default:
                     break;
             }
+            node.queueLength--;
+            this.totalwork--;
         })
     }
 
@@ -83,6 +89,7 @@ class ThreadPool {
         let node = this.selectThread();
         const threadId = node.worker.threadId;
         const workId = id++;
+        log(`select worker ${threadId}`);
         node.worker.postMessage({ filename, workId, args });
         node.queueLength++;
         this.totalwork++;
