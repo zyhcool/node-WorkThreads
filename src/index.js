@@ -3,7 +3,7 @@ const http = require('http')
 const { Worker } = require('worker_threads');
 const path = require('path');
 
-
+const PORT = 5000;
 
 // 原始
 // http.createServer((req, res) => {
@@ -34,11 +34,11 @@ const path = require('path');
 
 // 多线程封装
 http.createServer(async (req, res) => {
-    let data = await ThreadPool.submit(path.resolve(__dirname, 'cal.js'), 'hello')
+    let data = await ThreadPool.submit(path.resolve(__dirname, 'cal.js'), 1, 2)
     console.log(`res ${data}`)
     res.statusCode = 200;
     res.end(`${data}`);
-}).listen(3001, () => {
-    console.log('listen at 3001')
+}).listen(PORT, () => {
+    console.log(`listen at ${PORT}`)
 })
 
